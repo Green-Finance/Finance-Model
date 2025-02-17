@@ -7,24 +7,24 @@ class DatasetPreparer:
         self.dataset = None
 
     @staticmethod
-    def _alpaca_prompt_format(instruction, input_text, output, eos_token):
+    def _alpaca_prompt_format(instruction, output, eos_token):
         alpaca_prompt = (
             "Below is an instruction that describes a task, paired with an input that provides further context. "
             "Write a response that appropriately completes the request.\n\n"
             "### Instruction:\n{}\n\n"
-            "### Input:\n{}\n\n"
             "### Response:\n{}"
         )
-        return alpaca_prompt.format(instruction, input_text, output) + eos_token
+        return alpaca_prompt.format(instruction, output) + eos_token
 
     def _formatting_prompts_func(self, examples, eos_token):
         instructions = examples["instruction"]
-        inputs = examples["input"]
         outputs = examples["output"]
         texts = []
-        for instruction, inp, output in zip(instructions, inputs, outputs):
-            text = self._alpaca_prompt_format(instruction, inp, output, eos_token)
+        for instruction, output in zip(instructions, outputs):
+            text = self._alpaca_prompt_format(instruction, output, eos_token)
             texts.append(text)
+        # 디버그용 전체 텍스트 출력
+        print(texts[0])
         return {"text": texts}
 
     def prepare_dataset(self, tokenizer):

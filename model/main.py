@@ -11,7 +11,7 @@ def main():
                                random_state=3407)
 
     model, tokenizer = model_loader.load_model()
-    model, tokenizer = model_loader.prepare_model()
+    model, tokenizer = model_loader.prepare_peft_model()
 
     dataset_preparer = DatasetPreparer(dataset_name="BCCard/BCCard-Finance-Kor-QnA")
     dataset = dataset_preparer.prepare_dataset(tokenizer)
