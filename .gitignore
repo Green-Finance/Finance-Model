@@ -2,10 +2,31 @@
 __pycache__/
 *.py[cod]
 *$py.class
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> a93b2c9 (remerge)
 
 # C extensions
 *.so
 
+<<<<<<< HEAD
+=======
+=======
+.env 
+# C extensions
+*.so
+
+.refine_env
+
+data/2024-2025-mirae_asset.csv
+preprocessing/data_lst_second.json
+preprocessing/cleaned_data.json
+preprocessing/data_lst.json
+
+
+>>>>>>> d9480f1 (remerge)
+>>>>>>> a93b2c9 (remerge)
 # Distribution / packaging
 .Python
 build/
