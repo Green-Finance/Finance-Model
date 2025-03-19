@@ -34,7 +34,7 @@ splitter = MarkdownHeaderTextSplitter(
         ("##", "Header_2"),
         ("###", "Header_3"),
     ]
-)
+)   
 
 splits = [split for doc in docs for split in splitter.split_text(doc.page_content)]
 texts = [d.page_content for d in splits]
