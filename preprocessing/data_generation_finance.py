@@ -159,7 +159,7 @@ if __name__ == "__main__":
                 if (idx + 1) % save_every == 0 or idx == total_examples - 1:
                     save_to_json(results)
                     print(f"✅ [INFO] 저장 완료 (Index: {idx})")
-                    results = []  # ✅ 임시 리스트 초기화
+                    results = []  # ✅ 임시 리스트 초기화  
 
                 time.sleep(1)  # ✅ API 요청 간격
 
