@@ -2,7 +2,7 @@ from datasets import Dataset, DatasetDict
 import json
 from huggingface_hub import login
 
-def load_and_split_dataset(json_path, test_ratio=0.1):
+def load_and_split_dataset(json_path, test_ratio=0.05):
     """
     JSON 데이터를 로드하고 `train`과 `test`로 나누어 DatasetDict로 변환하는 함수
 
@@ -40,10 +40,10 @@ def load_and_split_dataset(json_path, test_ratio=0.1):
     return dataset_dict
 
 if __name__ == "__main__":
-    login(token="token")
-    json_path = "../preprocessing/cleaned_data.json"
+    login(token="api")
+    json_path = "../data/cleaned_data.json"
 
     # 데이터셋 로드 및 분할 (test 10%)
     dataset = load_and_split_dataset(json_path, test_ratio=0.1)
     
-    dataset.push_to_hub("UICHEOL-HWANG/GreenFinance-Finance_CoT")
+    dataset.push_to_hub("UICHEOL-HWANG/GreenFinance-Finance_rawQA")

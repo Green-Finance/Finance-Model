@@ -66,7 +66,7 @@ IMPORTANT:
 
 
 # 4. 데이터 생성 함수 정의
-def generate_cot_dataset(context: str, domain: str = "AI", num_questions: int = 3):
+def generate_cot_dataset(context: str, domain: str = "경제", num_questions: int = 3):
     filled_prompt = prompt.format(context=context, domain=domain, num_questions=num_questions)
 
     # OpenAI structured output (Pydantic 기반)
@@ -128,20 +128,27 @@ def save_to_json(data, filename=save_path):
 
 # ✅ 실행 (dataset을 for 루프로 순차적으로 처리하며 저장)
 if __name__ == "__main__":
-    # ✅ 데이터셋 포맷팅
-    dataset = dataset.map(formatting_prompts_func, batched=True)
+    # ✅ 기존 데이터 개수 설정
+    resume_index = 3082  
+    total_examples = len(df)  # ✅ 원본 데이터 개수 확인
 
-    results = []  # 임시 저장 리스트
-    save_every = 5  # ✅ 10개마다 저장
+    print(f"🔄 [INFO] 기존 데이터 {resume_index}개 처리됨. {resume_index + 1}번째부터 실행.")
+
+    # ✅ 데이터셋 포맷팅 (이미 처리된 부분 제외)
+    dataset = dataset.map(formatting_prompts_func, batched=True)
+    dataset = dataset.select(range(resume_index, total_examples))  # ✅ 원본 개수 기준으로 선택
+
+    results = []  # ✅ 임시 저장 리스트
+    save_every = 5  # ✅ 5개마다 저장
 
     try:
-        for idx, example in enumerate(dataset):
+        for idx, example in enumerate(dataset, start=resume_index):  # ✅ 기존 개수부터 시작
             try:
                 context = example["text"]  # 현재 데이터의 context 선택
-                print(f"🔹 [{idx+1}/{len(dataset)}] 데이터 처리 중...")
+                print(f"🔹 [{idx+1}/{total_examples}] 데이터 처리 중...")  # ✅ 총 데이터 개수 기준으로 진행률 표시
 
                 # ✅ CoT 데이터 생성
-                cot_data = generate_cot_dataset(context=context)
+                cot_data = generate_cot_dataset(context=context,domain="경제")
 
                 if cot_data:
                     results.extend(cot_data)  # ✅ 결과를 임시 리스트에 추가
@@ -149,7 +156,7 @@ if __name__ == "__main__":
                     print("⚠️ 데이터가 생성되지 않았습니다. 다음 항목으로 진행.")
 
                 # ✅ 일정 개수마다 저장
-                if idx % save_every == 0 or idx == len(dataset) - 1:
+                if (idx + 1) % save_every == 0 or idx == total_examples - 1:
                     save_to_json(results)
                     print(f"✅ [INFO] 저장 완료 (Index: {idx})")
                     results = []  # ✅ 임시 리스트 초기화
