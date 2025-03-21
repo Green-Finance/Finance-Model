@@ -129,7 +129,7 @@ def save_to_json(data, filename=save_path):
 # ✅ 실행 (dataset을 for 루프로 순차적으로 처리하며 저장)
 if __name__ == "__main__":
     # ✅ 기존 데이터 개수 설정
-    resume_index = 3082  
+    resume_index = 13682
     total_examples = len(df)  # ✅ 원본 데이터 개수 확인
 
     print(f"🔄 [INFO] 기존 데이터 {resume_index}개 처리됨. {resume_index + 1}번째부터 실행.")
