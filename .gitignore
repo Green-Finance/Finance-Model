@@ -8,7 +8,7 @@ __pycache__/
 # C extensions
 *.so
 
-
+data/research_reports.csv
 data/2024-2025-mirae_asset.csv
 data/cleaned_data_CoT_v1.json
 data/cleaned_data.json
