@@ -5,8 +5,6 @@ from src.data_insert import PGVecInsert
 import time
 import pandas as pd 
 
-
-
 category_lst_main = [
     "https://finance.naver.com/research/market_info_list.naver",
     "https://finance.naver.com/research/market_info_list.naver",
