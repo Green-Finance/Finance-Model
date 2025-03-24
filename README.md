@@ -40,7 +40,6 @@ CREATE TABLE industry_reports (
     content TEXT,
     document TEXT,             -- 청크된 텍스트
     embedding VECTOR(768),     -- 벡터
-    cmetadata JSONB,           -- 메타데이터
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -51,10 +50,13 @@ CREATE TABLE industry_reports (
 
 | 이슈 | 해결 방법 |
 |------|------------|
-| `embedding` 값이 pgvector와 LangChain에서 따로 관리됨 | `add_documents()`를 쓰면 중복 임베딩 발생함을 인지 |
-| 기존 테이블과 LangChain 포맷이 달라 검색 실패 | 테이블 구조를 `embedding`, `document`, `cmetadata`로 리팩터링 |
-| `get_relevant_documents()`가 문서 0건 반환 | `collection_name` 누락, `JSONB` 미설정 문제 해결 |
-| LangChain과 SQL 병행 유지 어려움 | 단일 테이블 구조로 통합 (`industry_reports`) |
+| `embedding` 값이 pgvector와 LangChain에서 따로 관리됨 | `add_documents()`를 쓰면 중복 임베딩 발생함을 인지 → `add_embeddings()`로 직접 임베딩 처리 및 저장 방식으로 전환 |
+| 기존 테이블과 LangChain 포맷이 달라 검색 실패 | 테이블 구조를 `embedding`, `document`, `cmetadata`로 리팩터링하여 LangChain 포맷에 맞춤 |
+| `get_relevant_documents()`가 문서 0건 반환 | `collection_name` 누락 또는 `use_jsonb=True` 설정 미적용 → 필수 인자 및 설정값 반영하여 해결 |
+| LangChain과 SQL 병행 유지 어려움 | 단일 테이블 구조에서 유지/관리 어려움 발생 → **원본 테이블(`industry_reports`)과 langchain PGVector 전용 테이블(`langchain_pg_embedding`)을 분리**하여 2중 관리 체계로 전환 |
+| vectorstore 검색 대상 문서가 부실하거나 의미 없는 경우 포함됨 | 저장 전 `page_content` 필터링 로직 추가 (길이 제한 및 특수문자만 포함된 청크 제거)로 불필요한 문서 삽입 방지 |
+| 벡터 삽입 후 검색 불가 현상 발생 | LangChain의 PGVector는 내부적으로 필수 필드 (`document`, `embedding`, `cmetadata`) 및 `collection_name`을 사용 → 컬럼 명칭 및 구조를 명확히 맞춰 해결 |
+
 
 ---
 
@@ -82,7 +84,7 @@ CREATE TABLE industry_reports (
 | `chunking_documents` | PDF 청크 단위 분리 및 임베딩 전처리 |
 | `Docling` | 마크다운 기반의 문서 정제 엔진 |
 | `PGVector` | LangChain 기반 벡터 검색기 |
-| `FastAPI / Streamlit` (계획) | 사용자 인터페이스 및 API |
+| `FastAPI ` (계획) | 사용자 인터페이스 및 API |
 
 ---
 
