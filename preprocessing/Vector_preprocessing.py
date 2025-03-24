@@ -46,3 +46,6 @@ conn.close()
 
 # 결론, Vector Searching을 위해서 전처리 과정을 2번 해야하는 번거로움으로 
 # 태초부터 langchain 데이터에 걸맞게 변형해서 재주입할 예정 
+
+# 2025.03.23 14시 확인결과 태초부터 langchain에 맞게 설계하는건 어려운 부분 
+# insert 하면서 langchain Vector로 연결 할 수 있도록 2중 설계 
