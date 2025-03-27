@@ -1,6 +1,7 @@
 from datasets import Dataset, DatasetDict
 import json
 from huggingface_hub import login
+import re 
 
 def load_and_split_dataset(json_path, test_ratio=0.05):
     """
@@ -17,7 +18,7 @@ def load_and_split_dataset(json_path, test_ratio=0.05):
     # 1️⃣ JSON 파일 로드
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)  # json.load() 사용
-
+    
     # 2️⃣ JSON 데이터를 Hugging Face Dataset 변환
     dataset = Dataset.from_list(data)
 
@@ -41,9 +42,9 @@ def load_and_split_dataset(json_path, test_ratio=0.05):
 
 if __name__ == "__main__":
     login(token="api")
-    json_path = "../data/cleaned_data.json"
+    json_path = "../data/finance_CoT.json"
 
     # 데이터셋 로드 및 분할 (test 10%)
     dataset = load_and_split_dataset(json_path, test_ratio=0.1)
     
-    dataset.push_to_hub("UICHEOL-HWANG/GreenFinance-Finance_rawQA")
+    dataset.push_to_hub("UICHEOL-HWANG/GreenFinance-Finance_rawQA-CoT")

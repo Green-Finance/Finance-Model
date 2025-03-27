@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+ollama/GreenFinance-DeepSeek-Llama3.1-8B-unsloth.Q4_K_M.gguf
 
 .env 
 # C extensions
