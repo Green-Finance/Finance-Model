@@ -1,0 +1,14 @@
+FROM ./GreenFinance-Gemma2-ko-9B.Q4_K_M.gguf
+
+TEMPLATE """
+<start_of_turn>user
+{{ if .System }}{{ .System }} {{ end }}{{ .Prompt }}<end_of_turn>
+<start_of_turn>model
+{{ .Response }}<end_of_turn>
+"""
+        
+PARAMETER temperature 0.6
+PARAMETER top_p 0.9
+
+PARAMETER stop "<start_of_turn>"
+PARAMETER stop "<end_of_turn>"

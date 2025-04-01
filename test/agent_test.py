@@ -24,10 +24,10 @@ from langchain_community.tools import DuckDuckGoSearchResults
 # model define 
 kanana = ChatOllama(
     model="huihui_ai/kanana-nano-abliterated:2.1b"
-    )
+)
 
 seek = ChatOllama(
-    model="jinbora/deepseek-r1-Bllossom:8b",
+    model="GreenFinanace-Reasoning:0.0.1v",
 )
 
 # ✅ PDF 로드 및 변환
