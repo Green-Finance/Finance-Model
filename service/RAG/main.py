@@ -30,7 +30,7 @@ def main():
     document_chain = create_chaining(
         prompt=PromptChain().document_prompt,
         model=AgentInitialized(model_name="GreenFinance-Deepseek-Llama3.1-8B:0.0.1v"),
-        parser=StrOutputParser
+        parser=StrOutputParser()
     )
     
     grader_chain = create_chaining(
@@ -45,9 +45,44 @@ def main():
         parser=StrOutputParser()
     )
     
-    return general_chain
+    # 노드 결합 완료
+    classification_node = partial(Node().classification_node, chain=classification_chain)
+    general_node = partial(Node().general_node, chain=general_chain)
+    generate = partial(Node().generate, chain=document_chain)
+    grade_documents = partial(Node().grade_documents, chain=grader_chain)
+    
+    # Workflow 
+    workflow = StateGraph(AgentState)
+
+    workflow.add_node("classification", classification_node)
+    workflow.add_node("general", general_node)
+    workflow.add_node("document_search", Node().document_retriever)
+    workflow.add_node("generate", generate)
+    workflow.add_node("grade", grade_documents)
+    workflow.add_node("web_search", Node().web_search)
     
     
+    workflow.add_edge(START, "classification") 
+    
+    workflow.add_conditional_edges(
+        "classification",
+        lambda state: (
+            "general" if state["classification"] == "0" 
+            else "document_search" if state["classification"] == "1"
+            else "web_search"
+        )
+    )
+    
+    workflow.add_edge("document_search", "grade")
+    workflow.add_conditional_edges(
+    "grade",
+    lambda state: "web_search" if state.get("web_search") == "Yes" else "generate"
+    )
+    workflow.add_edge("web_search", "generate")
+    workflow.add_edge("generate", END)
+    
+    result = workflow.compile()
+    return result 
     
 
 if __name__ == "__main__":

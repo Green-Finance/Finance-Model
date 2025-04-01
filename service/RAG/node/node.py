@@ -57,7 +57,7 @@ class Node:
         
         return state
     
-    def document_generate(self, state: AgentState, chain):
+    def generate(self, state: AgentState, chain):
         print("\n==== DOCUMENT WITH GENERATE ====\n")
         question = state["question"]
         documents = state["context"]  # context에 검색된 문서들이 저장되어 있음
@@ -99,7 +99,7 @@ class Node:
         web_search = "Yes" if relevant_doc_count == 0 else "No"
         return {"documents": filtered_docs, "web_search": web_search}
     
-    def web_serach(self, state: AgentState):
+    def web_search(self, state: AgentState):
         print("\n==== [WEB SEARCH] ====\n")
         question = state["question"]
         documents = state["documents"]
