@@ -2,7 +2,7 @@ FROM ./GreenFinance-DeepSeek-Llama3.1-8B-unsloth.Q4_K_M.gguf
 
 TEMPLATE """{{- if .System }}{{ .System }}{{ end }}
 {{- range $i, $_ := .Messages }}
-{{- $last := eq (len (slice $.Messages $i)) 1}}
+{{- $last := eq (len (slice $.Messages $i)) 1 }}
 {{- if eq .Role "user" }}<｜User｜>{{ .Content }}
 {{- else if eq .Role "assistant" }}<｜Assistant｜>{{ .Content }}{{- if not $last }}<｜end▁of▁sentence｜>{{- end }}
 {{- end }}
@@ -14,7 +14,7 @@ PARAMETER temperature 0.55
 PARAMETER repeat_penalty 1.35
 PARAMETER top_p 0.8
 
-PARAMETER stop "<|begin_of_sentence|>"
-PARAMETER stop "<|end_of_sentence|>"
-PARAMETER stop "<|User|>"
-PARAMETER stop "<|Assistant|>"
+PARAMETER stop "<｜begin▁of▁sentence｜>"
+PARAMETER stop "<｜end▁of▁sentence｜>"
+PARAMETER stop "<｜User｜>"
+PARAMETER stop "<｜Assistant｜>"

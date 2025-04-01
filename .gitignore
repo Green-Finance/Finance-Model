@@ -4,8 +4,10 @@ __pycache__/
 *$py.class
 
 ollama/GreenFinance-DeepSeek-Llama3.1-8B-unsloth.Q4_K_M.gguf
-
-.env 
+ollama/GreenFinance-Llama-3.2-ko-3B.Q4_K_M.gguf
+ollama/GreenFinance-DeepSeek-Llama3.1-8B-Basechat-unsloth.Q4_K_M.gguf
+ollama/GreenFinance-Gemma2-ko-9B.Q4_K_M.gguf
+.env    
 # C extensions
 *.so
 

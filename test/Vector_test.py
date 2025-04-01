@@ -20,9 +20,9 @@ vectorstore = PGVector(
     use_jsonb=True
 )
 
-retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
+retriever = vectorstore.as_retriever(search_type="mmr",  search_kwargs={"k": 10, "fetch_k": 3, "lambda_mult": 0.5},)
 
-
+ddocs = retriever.invoke("에코바이오 실적에 대해서 검색해줘")
 
 # reranker models 
 model = HuggingFaceCrossEncoder(model_name="BAAI/bge-reranker-v2-m3")
@@ -33,7 +33,7 @@ compression_retriever = ContextualCompressionRetriever(
     base_compressor=compressor, base_retriever=retriever
 )
 
-compressed_docs = compression_retriever.invoke("반도체 현황")
+compressed_docs = compression_retriever.invoke("크래프톤 투자의견")
 
 # 문서 출력 도우미 함수
 def pretty_print_docs(docs):
@@ -44,4 +44,4 @@ def pretty_print_docs(docs):
     )
 
 
-pretty_print_docs(compressed_docs)
+pretty_print_docs(ddocs)
