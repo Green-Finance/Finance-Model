@@ -3,6 +3,7 @@ from langchain_ollama import ChatOllama
 from langgraph.graph import END, StateGraph, START
 from functools import partial
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
+from langchain_core.runnables.graph import MermaidDrawMethod
 
 # chaining modules 
 
@@ -50,7 +51,7 @@ def main():
     general_node = partial(Node().general_node, chain=general_chain)
     generate = partial(Node().generate, chain=document_chain)
     grade_documents = partial(Node().grade_documents, chain=grader_chain)
-    
+
     # Workflow 
     workflow = StateGraph(AgentState)
 
