@@ -68,11 +68,13 @@ def main():
     workflow.add_conditional_edges(
         "classification",
         lambda state: (
-            "general" if state["classification"] == "0" 
-            else "document_search" if state["classification"] == "1"
+            "general" if state["classification_score"] == "0" 
+            else "document_search" if state["classification_score"] == "1"
             else "web_search"
         )
     )
+    
+    workflow.add_edge("general", END)
     
     workflow.add_edge("document_search", "grade")
     workflow.add_conditional_edges(
@@ -83,8 +85,18 @@ def main():
     workflow.add_edge("generate", END)
     
     result = workflow.compile()
+    
     return result 
     
 
 if __name__ == "__main__":
-    print(main())
+    app = main() 
+    
+    question = "ETF가 뭐야?"
+    
+    state = AgentState(question=question)
+    
+    result = app.invoke(state)
+    
+    print("\n🧠 질문:", question)
+    print("🤖 답변:", result.get("answer"))

@@ -6,7 +6,7 @@ class PromptChain:
         # 일반 질의 구간 
         self.llama_prompt = ChatPromptTemplate.from_messages([
             ("system", "당신은 질문에 맞는 답변을 생성하는 AI이다. 모든 응답은 반드시 한국어로 작성하며 자세하고 정확하게 답변해라."),
-            ("user", "{input}")
+            ("user", "{question}")
         ])
         self.question_grader_prompt = ChatPromptTemplate.from_messages([
             ("system", "당신은 사용자가 만든 질문의 품질을 평가하는 AI 전문가이다."),

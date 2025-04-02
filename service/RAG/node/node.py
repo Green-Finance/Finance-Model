@@ -14,7 +14,7 @@ class Node:
         result = generate_classification.get("classification_score")
         
         # AgentState의 "classification" 필드를 업데이트합니다.
-        state["classification"] = result
+        state["classification_score"] = result
         
         # 전체 state를 반환합니다.
         return state
@@ -22,14 +22,15 @@ class Node:
     def general_node(self, state: AgentState, chain):
         question = state["question"]
         classification = state["classification_score"]
-        
+
         if classification == "0":
             print("\n==== 일반 답변 ====\n")
-            
-            return chain.invoke({"question" : question})
+            response = chain.invoke({"question": question})
+            state["answer"] = response  
         else:
-            print("일반 답변 노드가 아님. classification_score:", classification)
-        return state
+            print("일반 답변 아님:", classification)
+
+        return state  
 
     def document_retriever(self, state: AgentState):
         print("\n==== 문서 검색 ====\n")
