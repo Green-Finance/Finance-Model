@@ -43,13 +43,16 @@ class Node:
             retriever_instance = Retriever()
             
             # 질문에 대해 관련 문서 검색 (get_relevant_documents 메서드 사용)
-            relevant_docs = retriever_instance.retriever.get_relevant_documents(question)
+            relevant_docs = retriever_instance.retriever.invoke(question)
             
             # 각 문서의 텍스트(page_content)를 추출하여 하나의 문자열로 결합
             context = "\n".join([doc.page_content for doc in relevant_docs])
             
             # AgentState의 "context" 필드에 업데이트
             state["context"] = context
+            
+            # RAG 평가용
+            state["relevant_docs"] = relevant_docs
             
             print("검색된 문서 (context):")
             print(state["context"])
@@ -73,37 +76,47 @@ class Node:
     def grade_documents(self, state: AgentState, chain):
         print("\n==== [CHECK DOCUMENT RELEVANCE TO QUESTION] ====\n")
         question = state["question"]
-        documents = state["documents"]
+        documents = state["relevant_docs"]
 
-        # 필터링된 문서를 저장할 리스트와 관련 문서 개수 초기화
-        filtered_docs = []
         relevant_doc_count = 0
+        filtered_docs = []
+        improved_prompts = []
 
         for d in documents:
-            # 각 문서의 관련성을 평가 (retrieval_grader는 미리 초기화되어 있어야 함)
-            score = chain.invoke({
+            result = chain.invoke({
                 "question": question,
-                "document": d.page_content
+                "documents": d.page_content
             })
-            # retrieval_grader가 반환한 결과에서 binary_score 값을 가져옴
-            grade = score.binary_score
 
-            if grade == "yes":
+            score = result["score"]
+            improved = result.get("improved_prompt", "").strip()
+
+            if score == "1":
                 print("==== [GRADE: DOCUMENT RELEVANT] ====")
                 filtered_docs.append(d)
                 relevant_doc_count += 1
             else:
                 print("==== [GRADE: DOCUMENT NOT RELEVANT] ====")
-                continue
+                if improved:
+                    print("💡 개선된 질문 예시:", improved)
+                    improved_prompts.append(improved)
 
-        # 관련 문서가 하나도 없으면 웹 검색이 필요함을 표시
+        # ✅ 루프 끝난 후 판단해야 정확
         web_search = "Yes" if relevant_doc_count == 0 else "No"
-        return {"documents": filtered_docs, "web_search": web_search}
+
+        # 필요 시 improved_prompts도 상태에 저장
+        state["relevant_docs"] = filtered_docs
+        state["web_search"] = web_search
+        if improved_prompts:
+            state["improved_prompts"] = improved_prompts
+
+        return state
+
     
     def web_search(self, state: AgentState):
         print("\n==== [WEB SEARCH] ====\n")
         question = state["question"]
-        documents = state["documents"]
+        documents = state["context"]
         
         docs = WebSearch.wrapper.search.invoke(question)
         
