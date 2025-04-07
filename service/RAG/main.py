@@ -13,6 +13,17 @@ from prompts.prompt import PromptChain
 from agent.initialized_model import AgentInitialized
 from node.node import Node
 
+# Tracing 
+
+import os 
+from dotenv import load_dotenv
+
+load_dotenv("C:/Users/user/Desktop/Finance-Model/.env")
+
+os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
+os.environ["LANGSMITH_API_KEY"] =  os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_PROJECT"] =  os.getenv("LANGSMITH_PROJECT")
+os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
 
 def main():
 
@@ -92,11 +103,11 @@ def main():
 if __name__ == "__main__":
     app = main() 
     
-    question = "ETF가 뭐야?"
+    question = "반도체 동향 분석해줄래?"
     
     state = AgentState(question=question)
     
     result = app.invoke(state)
     
-    print("\n🧠 질문:", question)
+    print("/n🧠 질문:", question)
     print("🤖 답변:", result.get("answer"))
