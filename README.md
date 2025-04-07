@@ -5,6 +5,18 @@
 
 ---
 
+## 👨‍👩‍👧‍👦 조원 소개
+
+| 이름 | 프로필 | GitHub |
+|------|--------|--------|
+| 지용욱 | <img src="https://avatars.githubusercontent.com/u/52349219?v=4" width="100"/> | [GitSkyBlue](https://github.com/GitSkyBlue) |
+| 송진희 | <img src="https://avatars.githubusercontent.com/u/139064340?v=4" width="100"/> | [jinheesong](https://github.com/jinheesong) |
+| 박제형 | <img src="https://avatars.githubusercontent.com/u/192846476?v=4" width="100"/> | [PJH-02](https://github.com/PJH-02) |
+| 정수인 | <img src="https://avatars.githubusercontent.com/u/192847666?v=4" width="100"/> | [sooin1516717](https://github.com/sooin1516717)|
+| 김호준 | <img src="https://avatars.githubusercontent.com/u/192846581?s=64&v=4" width="100"/> | [megashot](https://github.com/megashot)|
+| 황의철(팀장) | <img src="https://avatars.githubusercontent.com/u/109947779?v=4" width="100"/> | [UICHEOL-HWANG](https://github.com/UICHEOL-HWANG) |
+
+
 ## 🎯 목표
 
 - 금융/산업 보고서 데이터를 기반으로 **강력한 RAG(Retrieval-Augmented Generation)** 시스템을 구축
