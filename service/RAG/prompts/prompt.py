@@ -116,11 +116,11 @@ class PromptChain:
             5. 각 정보의 출처를 명시하고, 최신 정보를 우선시하여 반영합니다.
             
             질문: {question}
-            웹 검색 결과: {web_results}
+            웹 검색 결과: {documents}
             
             보고서:
             """,
-            input_variables=["question", "web_results"],
+            input_variables=["question", "documents"],
         )
 
 

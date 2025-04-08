@@ -64,13 +64,15 @@ class Node:
     def generate(self, state: AgentState, chain):
         print("\n==== DOCUMENT WITH GENERATE ====\n")
         question = state["question"]
-        documents = state["context"]  # context에 검색된 문서들이 저장되어 있음
-        
-        # 프롬프트 체인 호출 시, 올바른 키 이름("documents") 사용
-        generation = chain.invoke({"question": question, "documents": documents})
-        
-        # AgentState에 생성된 답변 업데이트
-        state["answer"] = generation
+        documents = state["context"]
+
+        streamed_answer = ""
+
+        for chunk in chain.stream({"question": question, "documents": documents}):
+            print(chunk, end="", flush=True)  # ✅ 실시간 출력
+            streamed_answer += chunk
+
+        state["answer"] = streamed_answer
         return state
     
     def grade_documents(self, state: AgentState, chain):
@@ -113,19 +115,32 @@ class Node:
         return state
 
     
-    def web_search(self, state: AgentState):
+    def web_search(self, state: AgentState, chain):
         print("\n==== [WEB SEARCH] ====\n")
         question = state["question"]
-        documents = state["context"]
-        
-        docs = WebSearch.wrapper.search.invoke(question)
-        
-        web_results = "\n".join([d["content"] for d in docs])
-        web_results = Document(page_content=web_results)
-        documents.append(web_results)
-        
-        return {"documents": documents}
-        
+        documents = state.get("context", [])
+
+        searcher = WebSearch()
+        docs = searcher.search.invoke(question)
+
+        web_results = "\n".join([d["snippet"] for d in docs])
+
+        # ✅ 여기에 LLM 호출 (예: 보고서 생성)
+        streamed_report = ""
+        for chunk in chain.stream({"question": question, "documents": web_results}):
+            print(chunk, end="", flush=True)
+            streamed_report += chunk
+
+        # 문서 형태로 감싸서 저장
+        doc_obj = Document(page_content=streamed_report)
+        documents.append(doc_obj)
+        state["context"] = documents
+
+        # 답변도 저장해주자
+        state["answer"] = streamed_report
+        return state
+
+
         
         
     

@@ -35,25 +35,25 @@ def main():
     
     classification_chain = create_chaining(
         prompt=PromptChain().classfication_question_prompt,
-        model=AgentInitialized(model_name="huihui_ai/kanana-nano-abliterated:2.1b"),
+        model=AgentInitialized(model_name="huihui_ai/kanana-nano-abliterated:2.1b", streaming=True),
         parser=JsonOutputParser()
     )
     
     document_chain = create_chaining(
         prompt=PromptChain().document_prompt,
-        model=AgentInitialized(model_name="GreenFinance-Deepseek-Llama3.1-8B:0.0.1v"),
+        model=AgentInitialized(model_name="GreenFinance-Deepseek-Llama3.1-8B:0.0.1v", streaming=True),
         parser=StrOutputParser()
     )
     
     grader_chain = create_chaining(
         prompt=PromptChain().retrieval_grader_prompt,
-        model=AgentInitialized(model_name="huihui_ai/kanana-nano-abliterated:2.1b"),
+        model=AgentInitialized(model_name="huihui_ai/kanana-nano-abliterated:2.1b", streaming=True),
         parser=JsonOutputParser()
     )
     
     web_search_chain = create_chaining(
         prompt=PromptChain().web_report_prompt,
-        model=AgentInitialized("GreenFinance-gemma2:0.0.1v"),
+        model=AgentInitialized("GreenFinance-gemma2:0.0.1v", streaming=True),
         parser=StrOutputParser()
     )
     
@@ -62,6 +62,7 @@ def main():
     general_node = partial(Node().general_node, chain=general_chain)
     generate = partial(Node().generate, chain=document_chain)
     grade_documents = partial(Node().grade_documents, chain=grader_chain)
+    web_search_node = partial(Node().web_search, chain=web_search_chain)
 
     # Workflow 
     workflow = StateGraph(AgentState)
@@ -71,7 +72,7 @@ def main():
     workflow.add_node("document_search", Node().document_retriever)
     workflow.add_node("generate", generate)
     workflow.add_node("grade", grade_documents)
-    workflow.add_node("web_search", Node().web_search)
+    workflow.add_node("web_search", web_search_node)
     
     
     workflow.add_edge(START, "classification") 
@@ -92,7 +93,7 @@ def main():
     "grade",
     lambda state: "web_search" if state.get("web_search") == "Yes" else "generate"
     )
-    workflow.add_edge("web_search", "generate")
+    workflow.add_edge("web_search", END)
     workflow.add_edge("generate", END)
     
     result = workflow.compile()
@@ -103,11 +104,9 @@ def main():
 if __name__ == "__main__":
     app = main() 
     
-    question = "반도체 동향 분석해줄래?"
+    question = "삼성전자 향후 주가 예상 검색해줄래?"
     
     state = AgentState(question=question)
     
     result = app.invoke(state)
-    
-    print("/n🧠 질문:", question)
-    print("🤖 답변:", result.get("answer"))
+    print(result)
