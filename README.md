@@ -14,7 +14,7 @@
 | 박제형 | <img src="https://avatars.githubusercontent.com/u/192846476?v=4" width="100"/> | [PJH-02](https://github.com/PJH-02) |
 | 정수인 | <img src="https://avatars.githubusercontent.com/u/192847666?v=4" width="100"/> | [sooin1516717](https://github.com/sooin1516717)|
 | 김호준 | <img src="https://avatars.githubusercontent.com/u/192846581?s=64&v=4" width="100"/> | [megashot](https://github.com/megashot)|
-| 황의철(팀장) | <img src="https://avatars.githubusercontent.com/u/109947779?v=4" width="100"/> | [UICHEOL-HWANG](https://github.com/UICHEOL-HWANG) |
+| 황의철(조장) | <img src="https://avatars.githubusercontent.com/u/109947779?v=4" width="100"/> | [UICHEOL-HWANG](https://github.com/UICHEOL-HWANG) |
 
 
 ## 🎯 목표
