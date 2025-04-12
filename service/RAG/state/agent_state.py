@@ -10,3 +10,5 @@ class AgentState(TypedDict):
     context: Optional[str]               # 문서 내용을 합친 것
     answer: Optional[str]                # 최종 답변
     relevant_docs: Optional[List[Document]] # 문서 비교를 위해 사용 
+    feedback : Optional[str]
+    grade_score : Optional[str]

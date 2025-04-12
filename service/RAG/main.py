@@ -57,12 +57,19 @@ def main():
         parser=StrOutputParser()
     )
     
+    general_grade_chain = create_chaining(
+        prompt=PromptChain().general_grader_prompt,
+        model=AgentInitialized(model_name="huihui_ai/kanana-nano-abliterated:2.1b", streaming=True),
+        parser=JsonOutputParser()
+    )
+    
     # 노드 결합 완료
     classification_node = partial(Node().classification_node, chain=classification_chain)
     general_node = partial(Node().general_node, chain=general_chain)
     generate = partial(Node().generate, chain=document_chain)
     grade_documents = partial(Node().grade_documents, chain=grader_chain)
     web_search_node = partial(Node().web_search, chain=web_search_chain)
+    general_grade_node = partial(Node().general_grade, chain=general_grade_chain)
 
     # Workflow 
     workflow = StateGraph(AgentState)
@@ -73,6 +80,7 @@ def main():
     workflow.add_node("generate", generate)
     workflow.add_node("grade", grade_documents)
     workflow.add_node("web_search", web_search_node)
+    workflow.add_node("general_grade", general_grade_node)
     
     
     workflow.add_edge(START, "classification") 
@@ -86,7 +94,8 @@ def main():
         )
     )
     
-    workflow.add_edge("general", END)
+    workflow.add_edge("general", "general_grade")
+    workflow.add_edge("general_grade", END)
     
     workflow.add_edge("document_search", "grade")
     workflow.add_conditional_edges(
@@ -104,9 +113,9 @@ def main():
 if __name__ == "__main__":
     app = main() 
     
-    question = "삼성전자 향후 주가 예상 검색해줄래?"
+    question = "ETF가 뭐야?"
     
     state = AgentState(question=question)
     
     result = app.invoke(state)
-    print(result)
+    print(result["answer"])

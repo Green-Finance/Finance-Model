@@ -8,33 +8,25 @@ class PromptChain:
             ("system", "당신은 질문에 맞는 답변을 생성하는 AI이다. 모든 응답은 반드시 한국어로 작성하며 자세하고 정확하게 답변해라."),
             ("user", "{question}")
         ])
-        self.question_grader_prompt = ChatPromptTemplate.from_messages([
-            ("system", "당신은 사용자가 만든 질문의 품질을 평가하는 AI 전문가이다."),
-            ("user", """다음 질문을 읽고 평가해주세요:
+        self.general_grader_prompt = ChatPromptTemplate.from_messages([
+            ("system", "당신은 이전 답변자가 만든 답변의 품질을 평가하는 AI 전문가이다."),
+            ("user", """다음 질문에 따른 답변을 읽고 평가해주세요:
 
             질문: {question}
+            
+            답변 : {answer}
 
-            - 질문이 구체적이고 명확하면 1점을 주세요.
-            - 질문이 모호하거나 개선이 필요하면 0점을 주세요.
+            - 답변이 구체적이고 명확하면 1점을 주세요.
+            - 답변이 모호하거나 개선이 필요하면 0점을 주세요.
 
             JSON 형식으로 반환해주세요.
             {{
-            "score": "1" 또는 "0",
-            "feedback": "질문에 대한 피드백을 자세히 작성해주세요."
+            "grade_score": "1" 또는 "0",
+            "feedback": "모호한 답변이 발생할 시 개선된 답변을 작성해주세요."
             }}""")
         ])
         
-        self.question_rewriter_prompt = ChatPromptTemplate.from_messages([
-            ("system", "당신은 질문을 명확하게 개선하는 전문가입니다."),
-            ("user", """다음 질문을 더 구체적이고 명확하게 개선해주세요.
 
-            원래 질문: {question}
-
-            JSON 형식으로 반환해주세요.
-            {{
-            "improved_question": "개선된 질문 내용"
-            }}""")
-        ])
         
         # 응답 구분 프롬프트 
         self.classfication_question_prompt = ChatPromptTemplate.from_messages([

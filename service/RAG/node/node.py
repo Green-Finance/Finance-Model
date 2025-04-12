@@ -25,12 +25,34 @@ class Node:
 
         if classification == "0":
             print("\n==== 일반 답변 ====\n")
+            
             response = chain.invoke({"question": question})
             state["answer"] = response  
         else:
             print("일반 답변 아님:", classification)
 
         return state  
+
+    def general_grade(self, state: AgentState, chain):
+        question = state["question"]
+        answer = state["answer"]
+
+        print("\n==== 일반 답변 품질 검증 ====\n")
+
+        response = chain.invoke({
+            "question": question,
+            "answer": answer
+        })
+
+        state["grade_score"] = response["grade_score"]
+        state["feedback"] = response.get("feedback", "")
+
+        print("✅ 평가 결과:", state["grade_score"])
+        if state["grade_score"] == "0":
+            print("💡 개선 피드백:", state["feedback"])
+
+        return state
+
 
     def document_retriever(self, state: AgentState):
         print("\n==== 문서 검색 ====\n")
